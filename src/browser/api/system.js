@@ -676,7 +676,7 @@ exports.System = {
         });
     },
     getAllExternalWindows: function() {
-        const skipOwnWindows = false;
+        const skipOwnWindows = true;
         const nativeWindows = [];
         const allNativeWindows = electronApp.getAllNativeWindowInfo(skipOwnWindows);
         const classNamesToIgnore = [
@@ -685,9 +685,6 @@ exports.System = {
             'ApplicationFrameWindow',
 
             'Windows.UI.Core.CoreWindow'
-        ];
-        const namesToIgnore = [
-            'Openfin'
         ];
         const titlesToIgnore = [
             'Cortana',
@@ -701,7 +698,6 @@ exports.System = {
         allNativeWindows.forEach(e => {
             const ew = extendNativeWindowInfo(e);
             const isUserFriendlyWindow = !classNamesToIgnore.includes(ew.className) &&
-                !namesToIgnore.includes(ew.name) &&
                 !titlesToIgnore.includes(ew.title) &&
                 ew.title &&
                 (ew.visible || externalWindows.has(ew.uuid));
