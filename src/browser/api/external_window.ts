@@ -539,7 +539,7 @@ async function subscribeToInjectionEvents(externalWindow: Shapes.ExternalWindow)
 }
 
 const classNamesToIgnore = [
-  // TODO: Edge, calculator, etc (looks like they are always 
+  // TODO: Edge, calculator, etc (looks like they are always
   // "opened" and "visible", but at least visiblity part is wrong)
   'ApplicationFrameWindow',
 

@@ -683,7 +683,7 @@ exports.System = {
         allNativeWindows.forEach(e => {
             const externalWindow = extendNativeWindowInfo(e);
             const isValid = isValidExternalWindow(externalWindow);
-            
+
             if (isValid) {
                 externalWindows.push(externalWindow);
             }
