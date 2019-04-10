@@ -481,6 +481,7 @@ function applyWindowGroupingStub(externalWindow: Shapes.ExternalWindow): Shapes.
   };
   externalWindow.browserWindow = externalWindow;
   externalWindow.isExternalWindow = true;
+  externalWindow.app_uuid = nativeId;
   externalWindow.name = nativeId;
   externalWindow.uuid = nativeId;
   externalWindow.isUserMovementEnabled = () => false;
