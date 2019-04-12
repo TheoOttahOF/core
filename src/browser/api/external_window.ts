@@ -484,7 +484,7 @@ function applyWindowGroupingStub(externalWindow: Shapes.ExternalWindow): Shapes.
   externalWindow.app_uuid = nativeId;
   externalWindow.name = nativeId;
   externalWindow.uuid = nativeId;
-  externalWindow.isUserMovementEnabled = () => false;
+  externalWindow.isUserMovementEnabled = () => false; // TODO: implement this
   externalWindow.setUserMovementEnabled = async (enableUserMovement: boolean): Promise<void> => {
     if (enableUserMovement) {
       await enableExternaWindowUserMovement(identity);
