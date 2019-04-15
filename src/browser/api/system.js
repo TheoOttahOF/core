@@ -29,7 +29,7 @@ import { fetchReadFile } from '../cached_resource_fetcher';
 import { createChromiumSocket, authenticateChromiumSocket } from '../transports/chromium_socket';
 import { authenticateFetch, clearCacheInvoked } from '../cached_resource_fetcher';
 import { extendNativeWindowInfo } from '../utils';
-import { isValidExternalWindow } from './external_window';
+import { isValidExternalWindow, findExternalWindow } from './external_window';
 
 const defaultProc = {
     getCpuUsage: function() {
@@ -282,6 +282,10 @@ exports.System = {
         const { id } = electronBrowserWindow.getFocusedWindow() || {};
         const { uuid, name } = coreState.getWinObjById(id) || {};
         return uuid ? { uuid, name } : null;
+    },
+    getFocusedExternalWindow: function() {
+        let { uuid } = electronBrowserWindow.getFocusedWindow() || {};
+        return uuid ? { uuid } : null;
     },
     getHostSpecs: function() {
         let state = new idleState();
