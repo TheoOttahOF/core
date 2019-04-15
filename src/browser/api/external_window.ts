@@ -209,7 +209,7 @@ function getKey(externalWindow: Shapes.ExternalWindow): string {
   return `${pid}-${nativeId}`;
 }
 
-/* 
+/*
   Finds and returns registerd external window
 */
 export function findExternalWindow(identity: Identity): Shapes.ExternalWindow|undefined {

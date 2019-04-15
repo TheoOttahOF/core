@@ -29,7 +29,7 @@ import { fetchReadFile } from '../cached_resource_fetcher';
 import { createChromiumSocket, authenticateChromiumSocket } from '../transports/chromium_socket';
 import { authenticateFetch, clearCacheInvoked } from '../cached_resource_fetcher';
 import { extendNativeWindowInfo } from '../utils';
-import { isValidExternalWindow, findExternalWindow } from './external_window';
+import { isValidExternalWindow } from './external_window';
 
 const defaultProc = {
     getCpuUsage: function() {
