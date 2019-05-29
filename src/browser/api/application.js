@@ -67,7 +67,7 @@ electronApp.on('use-plugins-requested', event => {
     }
 });
 
-electronApp.on('ready', function() {
+electronApp.on('ready', function () {
     rvmBus = require('../rvm/rvm_message_bus').rvmMessageBus;
     log.writeToLog(1, 'RVM MESSAGE BUS READY', true);
 
@@ -114,7 +114,7 @@ electronApp.on('ready', function() {
 
 });
 
-Application.create = function(opts, configUrl = '', parentIdentity = {}) {
+Application.create = function (opts, configUrl = '', parentIdentity = {}) {
     //Hide Window until run is called
 
     let appUrl = opts.url;
@@ -171,11 +171,11 @@ Application.create = function(opts, configUrl = '', parentIdentity = {}) {
 };
 
 
-Application.getCurrent = function() {
+Application.getCurrent = function () {
     //Implemented in RenderProcess
 };
 
-Application.getCurrentApplication = function() {
+Application.getCurrentApplication = function () {
     console.warn('Deprecated. Please use getCurrent');
 };
 
@@ -193,7 +193,7 @@ Application.wrap = coreState.getAppObjByUuid;
  *
  * @returns {function} A function that removes the given listner
  */
-Application.addEventListener = function(identity, appEvent, listener) {
+Application.addEventListener = function (identity, appEvent, listener) {
     // TODO this leaves it up the the app to unsubscribe and is a potential
     //      leak. perhaps we need a way to unhook when an app disconnects
     //      automatically
@@ -242,7 +242,7 @@ Application.addEventListener = function(identity, appEvent, listener) {
 
 //TODO:Ricardo: This is private do not expose it as part of the module.
 function closeChildWins(identity) {
-    Application.getChildWindows(identity).forEach(function(childWindow) {
+    Application.getChildWindows(identity).forEach(function (childWindow) {
         const childWindowIdentity = {
             name: childWindow.name,
             uuid: childWindow.uuid
@@ -251,7 +251,7 @@ function closeChildWins(identity) {
     });
 }
 
-Application.close = function(identity, force, callback) {
+Application.close = function (identity, force, callback) {
     let app = Application.wrap(identity.uuid);
 
     if (!app) {
@@ -278,7 +278,7 @@ Application.close = function(identity, force, callback) {
         Window.close(mainWindowIdentity, force, callback);
     }
 };
-Application.destroy = function(identity, ack, nack) {
+Application.destroy = function (identity, ack, nack) {
     if (coreState.getAppRunningState(identity.uuid)) {
         nack('Cannot destroy a running application');
     } else {
@@ -286,7 +286,7 @@ Application.destroy = function(identity, ack, nack) {
         ack();
     }
 };
-Application.getChildWindows = function(identity /*, callback, errorCallback*/ ) {
+Application.getChildWindows = function (identity /*, callback, errorCallback*/) {
     const uuid = identity.uuid;
     const appError = checkApplicationAvailability(uuid);
 
@@ -298,11 +298,11 @@ Application.getChildWindows = function(identity /*, callback, errorCallback*/ ) 
     }
 };
 
-Application.getGroups = function( /* callback, errorCallback*/ ) {
+Application.getGroups = function ( /* callback, errorCallback*/) {
     return WindowGroups.getGroups();
 };
 
-Application.getManifest = function(identity, manifestUrl, callback, errCallback) {
+Application.getManifest = function (identity, manifestUrl, callback, errCallback) {
     // When manifest URL is not provided, get the manifest for the current application
     if (!manifestUrl) {
         const appObject = coreState.getAppObjByUuid(identity.uuid);
@@ -323,7 +323,7 @@ Application.getManifest = function(identity, manifestUrl, callback, errCallback)
     }
 };
 
-Application.getParentApplication = function(identity) {
+Application.getParentApplication = function (identity) {
     const app = coreState.appByUuid(identity.uuid);
     const {
         parentUuid
@@ -332,7 +332,7 @@ Application.getParentApplication = function(identity) {
     return parentUuid;
 };
 
-Application.getZoomLevel = function(identity, callback) {
+Application.getZoomLevel = function (identity, callback) {
     const uuid = identity.uuid;
     const appError = checkApplicationAvailability(uuid);
 
@@ -344,7 +344,7 @@ Application.getZoomLevel = function(identity, callback) {
     }
 };
 
-Application.getShortcuts = function(identity, callback, errorCallback) {
+Application.getShortcuts = function (identity, callback, errorCallback) {
     let app = Application.wrap(identity.uuid);
     let manifestUrl = app && app._configUrl;
 
@@ -354,14 +354,14 @@ Application.getShortcuts = function(identity, callback, errorCallback) {
     }
 
     sendToRVM({
-            topic: 'application',
-            action: 'get-shortcut-state',
-            sourceUrl: manifestUrl
-        }).then(callback, errorCallback)
+        topic: 'application',
+        action: 'get-shortcut-state',
+        sourceUrl: manifestUrl
+    }).then(callback, errorCallback)
         .catch(errorCallback);
 };
 
-Application.getInfo = function(identity, callback) {
+Application.getInfo = function (identity, callback) {
     const app = coreState.appByUuid(identity.uuid);
 
     const manifestObj = coreState.getClosestManifest(identity);
@@ -384,26 +384,26 @@ Application.getInfo = function(identity, callback) {
     callback(response);
 };
 
-Application.getWindow = function(identity) {
+Application.getWindow = function (identity) {
     let uuid = identity.uuid;
 
     return Window.wrap(uuid, uuid);
 };
 
-Application.grantAccess = function() {
+Application.grantAccess = function () {
     console.warn('Deprecated');
 };
-Application.grantWindowAccess = function() {
+Application.grantWindowAccess = function () {
     console.warn('Deprecated');
 };
-Application.isRunning = function(identity) {
+Application.isRunning = function (identity) {
     let uuid = identity && identity.uuid;
     return !!(uuid && coreState.getAppRunningState(uuid) && !coreState.getAppRestartingState(uuid));
 };
-Application.pingChildWindow = function() {
+Application.pingChildWindow = function () {
     console.warn('Deprecated');
 };
-Application.registerUser = function(identity, userName, appName, callback, errorCallback) {
+Application.registerUser = function (identity, userName, appName, callback, errorCallback) {
     const uuid = identity.uuid;
     const app = coreState.getAppByUuid(uuid) || coreState.getExternalAppObjByUuid(uuid);
 
@@ -438,33 +438,33 @@ Application.registerUser = function(identity, userName, appName, callback, error
         registeredUsersByApp[uuid].add(userName);
 
         sendToRVM({
-                topic: 'application',
-                action: 'register-user',
-                sourceUrl: configUrl,
-                runtimeVersion: System.getVersion(),
-                payload: {
-                    userName: userName,
-                    appName: appName
-                }
-            }).then(callback, errorCallback)
+            topic: 'application',
+            action: 'register-user',
+            sourceUrl: configUrl,
+            runtimeVersion: System.getVersion(),
+            payload: {
+                userName: userName,
+                appName: appName
+            }
+        }).then(callback, errorCallback)
             .catch(errorCallback);
     }
 };
 
 //TODO:Ricardo: This should be deprecated.
-Application.removeEventListener = function(identity, type, listener) {
+Application.removeEventListener = function (identity, type, listener) {
     var app = Application.wrap(identity.uuid);
 
     ofEvents.removeListener(route.application(type, app.id), listener);
 };
 
-Application.removeTrayIcon = function(identity) {
+Application.removeTrayIcon = function (identity) {
     const app = Application.wrap(identity.uuid);
 
     removeTrayIcon(app);
 };
 
-Application.restart = function(identity) {
+Application.restart = function (identity) {
     const uuid = identity.uuid;
     const appError = checkApplicationAvailability(uuid);
 
@@ -479,7 +479,7 @@ Application.restart = function(identity) {
     try {
         Application.close(identity, true, () => {
             Application.run(identity, appObj._configUrl);
-            ofEvents.once(route.application('initialized', uuid), function() {
+            ofEvents.once(route.application('initialized', uuid), function () {
                 coreState.setAppRestartingState(uuid, false);
             });
         });
@@ -491,17 +491,17 @@ Application.restart = function(identity) {
     }
 };
 
-Application.revokeAccess = function() {
+Application.revokeAccess = function () {
     console.warn('Deprecated');
 };
 
-Application.revokeWindowAccess = function() {
+Application.revokeWindowAccess = function () {
     console.warn('Deprecated');
 };
 
 // userAppConfigArgs must be set to 'undefined' because
 // regular parameters cannot come after default parameters.
-Application.run = function(identity, configUrl = '', userAppConfigArgs = undefined) {
+Application.run = function (identity, configUrl = '', userAppConfigArgs = undefined) {
     if (!identity) {
         return;
     }
@@ -718,7 +718,7 @@ function run(identity, mainWindowOpts, userAppConfigArgs) {
                 deregisterAllRuntimeProxyWindows();
 
                 // Force close any windows that have slipped past core-state
-                BrowserWindow.getAllWindows().forEach(function(window) {
+                BrowserWindow.getAllWindows().forEach(function (window) {
                     window.close();
                 });
 
@@ -761,7 +761,7 @@ function run(identity, mainWindowOpts, userAppConfigArgs) {
 /**
  * Run an application via RVM
  */
-Application.runWithRVM = function(identity, manifestUrl) {
+Application.runWithRVM = function (identity, manifestUrl) {
     return sendToRVM({
         topic: 'application',
         action: 'launch-app',
@@ -772,11 +772,11 @@ Application.runWithRVM = function(identity, manifestUrl) {
     });
 };
 
-Application.send = function() {
+Application.send = function () {
     console.warn('Deprecated. Please use InterAppBus');
 };
 
-Application.setShortcuts = function(identity, config, callback, errorCallback) {
+Application.setShortcuts = function (identity, config, callback, errorCallback) {
     let app = Application.wrap(identity.uuid);
     let manifestUrl = app && app._configUrl;
 
@@ -796,7 +796,7 @@ Application.setShortcuts = function(identity, config, callback, errorCallback) {
     }
 };
 
-Application.setAppLogUsername = function(identity, username) {
+Application.setAppLogUsername = function (identity, username) {
     let app = Application.wrap(identity.uuid);
 
     const options = {
@@ -809,35 +809,42 @@ Application.setAppLogUsername = function(identity, username) {
 };
 
 
-Application.setTrayIcon = function(identity, iconUrl, callback, errorCallback) {
+Application.setTrayIcon = function (identity, iconUrl, callback, errorCallback) {
     let { uuid } = identity;
-
-    if (fetchingIcon[uuid]) {
-        errorCallback(new Error('currently fetching icon'));
-        return;
-    }
-
-    fetchingIcon[uuid] = true;
 
     const appError = checkApplicationAvailability(uuid);
     if (appError) {
         errorCallback(new Error(appError));
     }
-
     const app = Application.wrap(uuid);
-
-    // only one tray icon per app
-    // cleanup the old one so it can be replaced
-    removeTrayIcon(app);
-
     const mainWindowIdentity = app.identity;
+    const regex = new RegExp(/^(?<http>https*)|(?<data>data:image\/(png|jpeg);base64,)/);
+    const matches = iconUrl.match(regex);
 
-    iconUrl = Window.getAbsolutePath(mainWindowIdentity, iconUrl);
+    let iconImage;
+    if (matches.groups.http) {
+        iconImage = nativeImage.createFromPath(iconUrl);
+    } else if (matches.groups.data) {
+        iconUrl = Window.getAbsolutePath(mainWindowIdentity, iconUrl);
+        iconImage = nativeImage.createFromDataURL(iconUrl);
+    }
+
+    if (app.tray) {
+        app.tray.setImage(iconImage);
+        return;
+    }
+    if (fetchingIcon[uuid]) {
+        errorCallback(new Error('currently fetching icon'));
+        return;
+    }
+    app.tray = new Tray(iconImage);
+
+    fetchingIcon[uuid] = true;
 
     cachedFetch(mainWindowIdentity, iconUrl, (error, iconFilepath) => {
         if (!error) {
             if (app) {
-                const iconImage = nativeImage.createFromPath(iconFilepath);
+                const iconImage = nativeImage.createFromDataURL(iconFilepath);
                 const icon = app.tray = new Tray(iconImage);
                 const monitorInfo = MonitorInfo.getInfo('system-query');
                 const clickedRoute = route.application('tray-icon-clicked', app.uuid);
@@ -892,7 +899,7 @@ Application.setTrayIcon = function(identity, iconUrl, callback, errorCallback) {
     });
 };
 
-Application.setZoomLevel = function(identity, level) {
+Application.setZoomLevel = function (identity, level) {
     const uuid = identity.uuid;
     const appError = checkApplicationAvailability(uuid);
 
@@ -902,7 +909,7 @@ Application.setZoomLevel = function(identity, level) {
         const app = coreState.appByUuid(uuid);
 
         // set zoom level for each child window
-        app.children.forEach(function(childWindow) {
+        app.children.forEach(function (childWindow) {
             const childWindowIdentity = {
                 name: childWindow.openfinWindow.name,
                 uuid: childWindow.openfinWindow.uuid
@@ -912,7 +919,7 @@ Application.setZoomLevel = function(identity, level) {
     }
 };
 
-Application.sendApplicationLog = function(identity) {
+Application.sendApplicationLog = function (identity) {
     let app = Application.wrap(identity.uuid);
 
     const options = {
@@ -924,7 +931,7 @@ Application.sendApplicationLog = function(identity) {
     return sendToRVM(options);
 };
 
-Application.getTrayIconInfo = function(identity, callback, errorCallback) {
+Application.getTrayIconInfo = function (identity, callback, errorCallback) {
     const app = Application.wrap(identity.uuid);
     const bounds = app && app.tray && app.tray.getIconRect();
 
@@ -941,7 +948,7 @@ Application.getTrayIconInfo = function(identity, callback, errorCallback) {
 };
 
 
-Application.scheduleRestart = function(identity, callback, errorCallback) {
+Application.scheduleRestart = function (identity, callback, errorCallback) {
     const uuid = identity.uuid;
     const appError = checkApplicationAvailability(uuid);
 
@@ -966,18 +973,18 @@ Application.scheduleRestart = function(identity, callback, errorCallback) {
     }
 };
 
-Application.terminate = function(identity, callback) {
+Application.terminate = function (identity, callback) {
     Application.close(identity, true, callback);
 };
 
-Application.emitHideSplashScreen = function(identity) {
+Application.emitHideSplashScreen = function (identity) {
     var uuid = identity && identity.uuid;
     if (uuid) {
         ofEvents.emit(route.application('hide-splashscreen', uuid));
     }
 };
 
-Application.emitRunRequested = function(identity, userAppConfigArgs) {
+Application.emitRunRequested = function (identity, userAppConfigArgs) {
     const uuid = identity && identity.uuid;
     if (uuid) {
         ofEvents.emit(route.application('run-requested', uuid), {
@@ -989,7 +996,7 @@ Application.emitRunRequested = function(identity, userAppConfigArgs) {
     }
 };
 
-Application.wait = function() {
+Application.wait = function () {
     console.warn('Awaiting native implementation');
 };
 
@@ -1064,12 +1071,12 @@ ofEvents.on(route.window('connected', '*'), payload => {
     broadcastOnAppConnected(payload.data[0]);
 });
 
-Application.notifyOnContentLoaded = function(target, identity) {
+Application.notifyOnContentLoaded = function (target, identity) {
     registerAppLoadedListener(target, identity);
     console.warn('Deprecated. Please addEventListener');
 };
 
-Application.notifyOnAppConnected = function(target, identity) {
+Application.notifyOnAppConnected = function (target, identity) {
     registerAppConnectedListener(target, identity);
     console.warn('Deprecated. Please addEventListener');
 };
@@ -1125,7 +1132,7 @@ function createAppObj(uuid, opts, configUrl = '') {
                     if (isNonEmptyString(opts[key])) {
                         break;
                     }
-                    /* falls through */
+                /* falls through */
                 default:
                     opts[key] = value;
             }
@@ -1158,9 +1165,9 @@ function createAppObj(uuid, opts, configUrl = '') {
                 } else {
                     log.writeToLog(1, `receiving net error ${errorCode} for ${opts.uuid}`, true);
                     if (!coreState.argo['noerrdialogs'] && configUrl) {
-                        const errorMsgForDialog = errorDescription || `error code ${ errorCode }`;
+                        const errorMsgForDialog = errorDescription || `error code ${errorCode}`;
                         // NOTE: don't show this dialog if the app is created via the api
-                        const errorMessage = opts.loadErrorMessage || `There was an error loading the application: ${ errorMsgForDialog }`;
+                        const errorMessage = opts.loadErrorMessage || `There was an error loading the application: ${errorMsgForDialog}`;
                         dialog.showErrorBox('Fatal Error', errorMessage);
                     }
                     _.defer(() => {
